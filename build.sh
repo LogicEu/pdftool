@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 comp=gcc
 name=libpdftool
@@ -39,7 +39,7 @@ dlib() {
 }
 
 slib() {
-    $comp ${flags[*]} ${inc[*]} -c ${src[*]} && ar -cvq $name.a *.o && rm *.o
+    $comp ${flags[*]} ${inc[*]} -c $src && ar -cvq $name.a *.o && rm *.o
 }
 
 fail() {
