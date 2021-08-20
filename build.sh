@@ -19,9 +19,23 @@ lib=(
     -lz
 )
 
-dlib() {
+mac_lib() {
     $comp ${flags[*]} ${inc[*]} ${lib[*]} -dynamiclib $src -o $name.dylib &&\
     install_name_tool -id @executable_path/$name.dylib $name.dylib
+}
+
+linux_lib() {
+    $comp -o $name.so $src ${flags[*]} ${inc[*]} ${lib[*]} -shared -fPIC
+}
+
+dlib() {
+    if echo "$OSTYPE" | grep -q "darwin"; then
+        mac_lib
+    elif echo "$OSTYPE" | grep -q "linux"; then
+        linux_lib
+    else
+        echo "OS not supported by this script" && exit
+    fi
 }
 
 slib() {
