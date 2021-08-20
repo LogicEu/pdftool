@@ -20,15 +20,12 @@ lib=(
 )
 
 dlib() {
-    $comp ${flags[*]} ${inc[*]} ${lib[*]} -dynamiclib $src -o $name.dylib
+    $comp ${flags[*]} ${inc[*]} ${lib[*]} -dynamiclib $src -o $name.dylib &&\
     install_name_tool -id @executable_path/$name.dylib $name.dylib
 }
 
 slib() {
-    $comp ${flags[*]} ${inc[*]} -c ${src[*]}
-    rm $name.a 
-    ar -cvq $name.a *.o
-    rm *.o
+    $comp ${flags[*]} ${inc[*]} -c ${src[*]} && ar -cvq $name.a *.o && rm *.o
 }
 
 fail() {
@@ -36,12 +33,11 @@ fail() {
     exit
 }
 
-if [[ $# < 1 ]]; then
-    fail
-elif [[ "$1" == "-d" ]]; then
-    dlib
-elif [[ "$1" == "-s" ]]; then
-    slib
-else
-    fail
-fi
+case "$1" in
+    "-d")
+        dlib;;
+    "-s")
+        slib;;
+    *)
+        fail;;
+esac
